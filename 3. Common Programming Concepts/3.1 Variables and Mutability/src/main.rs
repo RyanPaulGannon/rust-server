@@ -1,8 +1,22 @@
 fn main() {
-    // Use 'mut' to allow mutability, e.g. let mut x = 5 will allow the value to be changed
-    // Contants aren't allowed to be used with mut
+
+    test_function();
+
+    // Example of a statement - these return a vlue
     let x = 5;
+
+    /*
+        Multi line comment test, below is example of an expression which returns a value 
+    */
+    let x = x + 1;
+    {
+        let x = x * 2;
+        println!("The value of x in the inner scope is: {x}");
+    }
+
     println!("The value of x is: {x}");
-    x = 6;
-    println!("The value of x is: {x}");
+}
+
+fn test_function() {
+    println!("A function inside a function")
 }
