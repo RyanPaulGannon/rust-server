@@ -1,4 +1,12 @@
+use rocket::serde::json::Json;
+use serde::{Serialize, Deserialize};
+
 #[macro_use] extern crate rocket;
+
+#[derive(Serialize, Deserialize)]
+struct User {
+    name: String,
+}
 
 #[get("/")]
 fn index() -> &'static str {
@@ -6,8 +14,12 @@ fn index() -> &'static str {
 }
 
 #[get("/api")]
-fn get_all_users() -> &'static str {
-    "Hello, API!"
+fn get_all_users() -> Json<User> {
+   Json(
+    User {
+        name: "Ryan".to_string(),
+    }
+   )
 }
 
 #[get("/api/<name>")]
