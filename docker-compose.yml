@@ -1,12 +1,12 @@
 version: '3.9'
 
 services:
-    rust_api:
+    rust-api-db:
         container_name: rust-api
-        image: 'postgres:15'
+        image: postgres:15
+        restart: always
         ports:
             - '5432:5432'
         environment:
             - POSTGRES_USER=ryan
             - POSTGRES_PASSWORD=password
-            - POSTGRES_DB=database

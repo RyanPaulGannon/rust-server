@@ -5,7 +5,9 @@ use serde::{Serialize, Deserialize};
 
 #[derive(Serialize, Deserialize)]
 struct User {
+    id: i32,
     name: String,
+    email: String,
 }
 
 #[get("/")]
@@ -17,19 +19,33 @@ fn index() -> &'static str {
 fn get_all_users() -> Json<User> {
    Json(
     User {
+        id: 1,
         name: "Ryan".to_string(),
+        email: "test@email.com".to_string(),
     }
    )
 }
 
-#[get("/api/<name>")]
-fn name(name: &str) -> String {
-    format!("Hello, {}!", name)
+#[get("/api/get-user/<id>")]
+fn id(id: i32) -> Json<User> {
+    Json(
+        User {
+            id,
+            name: "Ryan".to_string(),
+            email: "test@email.com".to_string(),
+        }
+    )
 }
 
 #[post("/api/add-user")]
-fn add_user() -> &'static str {
-    "Add User - Todo"
+fn add_user() -> Json<User> {
+    Json(
+        User {
+            id: 12,
+            name: "Ryan".to_string(),
+            email: "test@email.com".to_string()
+        }
+    )
 }
 
 #[put("/api/update-user")]
@@ -45,5 +61,5 @@ fn delete_user() -> &'static str {
 #[launch]
 fn rocket() -> _ {
     rocket::build()
-        .mount("/", routes![index, get_all_users, name, add_user, update_user, delete_user])
+        .mount("/", routes![index, get_all_users, id, add_user, update_user, delete_user])
 }
