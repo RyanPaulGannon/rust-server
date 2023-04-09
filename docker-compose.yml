@@ -8,5 +8,6 @@ services:
         ports:
             - '5432:5432'
         environment:
-            - POSTGRES_USER=ryan
-            - POSTGRES_PASSWORD=password
+            - POSTGRES_USER=${DOCKER_USER}
+            - POSTGRES_PASSWORD=${DOCKER_PASSWORD}
+            - POSTGRES_DB=${DOCKER_DB}
