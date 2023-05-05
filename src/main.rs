@@ -1,82 +1,19 @@
-use rocket::serde::json::Json;
-use serde::{Serialize, Deserialize};
-
-use diesel::pg::PgConnection;
-use diesel::Connection;
-
-use dotenv::dotenv;
-use std::env;
-
-#[macro_use] extern crate rocket;
-
-pub fn establish_connection() -> PgConnection {
-    dotenv().ok();
-
-    let database_url = env::var("DATABASE_URL")
-        .expect("DATABASE_URL must be set");
-
-    PgConnection::establish(&database_url)
-        .expect(&format!("Error connecting to {}", database_url))
-}
-
-#[derive(Serialize, Deserialize)]
-struct User {
-    id: i32,
-    name: String,
-    email: String,
-}
+use actix_web::{get, web, App, HttpServer, Responder};
 
 #[get("/")]
-fn index() -> &'static str {
-    "Welcome Page"
+async fn index() -> impl Responder {
+    "Hello, World!"
 }
 
-#[get("/api")]
-fn get_all_users() -> Json<User> {
-   Json(
-    User {
-        id: 1,
-        name: "Ryan".to_string(),
-        email: "test@email.com".to_string(),
-    }
-   )
+#[get("/{name}")]
+async fn hello(name: web::Path<String>) -> impl Responder {
+    format!("Hello {}!", &name)
 }
 
-#[get("/api/get-user/<id>")]
-fn id(id: i32) -> Json<User> {
-    Json(
-        User {
-            id,
-            name: "Ryan".to_string(),
-            email: "test@email.com".to_string(),
-        }
-    )
-}
-
-#[post("/api/add-user")]
-fn add_user() -> Json<User> {
-    Json(
-        User {
-            id: 12,
-            name: "Ryan".to_string(),
-            email: "test@email.com".to_string()
-        }
-    )
-}
-
-#[put("/api/update-user")]
-fn update_user() -> &'static str {
-    "Update User - Todo"
-}
-
-#[delete("/api/delete-user")]
-fn delete_user() -> &'static str {
-    "Delete User - Todo"
-}
-
-#[launch]
-fn rocket() -> _ {
-    establish_connection();
-    rocket::build()
-        .mount("/", routes![index, get_all_users, id, add_user, update_user, delete_user])
+#[actix_web::main]
+async fn main() -> std::io::Result<()> {
+    HttpServer::new(|| App::new().service(index).service(hello))
+        .bind(("127.0.0.1", 8080))?
+        .run()
+        .await
 }
