@@ -1,4 +1,3 @@
-use actix_web::{get, web, App, HttpServer, Responder};
 use postgres::{ Client, NoTls};
 use postgres::Error as PostgresError;
 use std::net::{TcpListener, TcpStream };
@@ -15,20 +14,12 @@ struct User {
     email: String
 }
 
-#[get("/")]
-async fn index() -> impl Responder {
-    "Hello, World!"
-}
+// const DB_URL: &str = env!("DATABASE_URL");
 
-#[get("/{name}")]
-async fn hello(name: web::Path<String>) -> impl Responder {
-    format!("Hello {}!", &name)
-}
+const OK_RESPONSE: &str = "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n";
+const NOT_FOUND: &str = "HTTP/1.1 404 Not Found\r\n";
+const INTERNAL_SERVER_ERROR: &str = "HTTP/1.1 500 Internal Server Error\r\n";
 
-#[actix_web::main]
-async fn main() -> std::io::Result<()> {
-    HttpServer::new(|| App::new().service(index).service(hello))
-        .bind(("127.0.0.1", 8080))?
-        .run()
-        .await
+fn main() {
+    println!("Hello");
 }
