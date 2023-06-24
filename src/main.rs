@@ -4,6 +4,10 @@ use std::error::Error;
 use tokio;
 use dotenv::dotenv;
 
+use crate::mongo::db::User;
+
+pub mod mongo;
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
     dotenv().ok();
@@ -24,5 +28,10 @@ async fn main() -> Result<(), Box<dyn Error>> {
       println!("- {}", name);
    }
 
+   // Mongo Crate Dir Test
+   let doc = User {};
+   println!("New user, {:?}", doc);
+
    Ok(())
 }
+
