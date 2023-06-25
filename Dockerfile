@@ -1,23 +1,12 @@
-# Build Stage
-FROM rust:1.69-buster as builder
+FROM rust:latest
 
 WORKDIR /app
 
-# Accept the build argument
-ARG DATABASE_URL
-
-ENV DATABASE_URL=$DATABASE_URL
-
 COPY . .
+
+ARG DATABASE_URL
+ENV DATABASE_URL=$DATABASE_URL
 
 RUN cargo build --release
 
-# Production Stage
-FROM debian:buster-slim
-
-WORKDIR /usr/local/bin 
-
-COPY --from=builder /app/target/release/rust-server .
-
-# Start the app
-CMD ["./rust-server"]
+CMD ./target/release/rust-server
