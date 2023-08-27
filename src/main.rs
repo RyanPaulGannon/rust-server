@@ -1,32 +1,21 @@
-use std::{fs, net::{TcpListener, TcpStream}, io::{prelude::*, BufReader}};
+use dotenv::dotenv;
+use futures::executor::block_on;
+use sea_orm::{Database, DbErr};
+use std::env;
 
-fn main() {
-    let listener = TcpListener::bind("127.0.0.1:7926").unwrap();
+const DATABASE_NAME: &str = "ryans_test";
 
-    for stream in listener.incoming() {
-        let stream = stream.unwrap();
+async fn run() -> Result<(), DbErr> {
+    let database_url = env::var("DATABASE_URL").expect("Database url must be set");
+    let db = Database::connect(&database_url).await?;
 
-        println!("Connection established!");
-        
-        handle_connection(stream);
-    }
-
+    Ok(())
 }
 
-fn handle_connection(mut stream: TcpStream) {
-    let buf_reader = BufReader::new(&mut stream);
-    let http_request: Vec<_> = buf_reader
-        .lines()
-        .map(|result| result.unwrap())
-        .take_while(|line| !line.is_empty())
-        .collect();
+fn main() {
+    dotenv().ok();
 
-    let status_line = "HTTP/1.1 200 OK";
-    let contents = fs::read_to_string("hello.html").unwrap();
-    let length = contents.len();
-
-    let response =
-        format!("{status_line}\r\nContent-Length: {length}\r\n\r\n{contents}");
-
-    stream.write_all(response.as_bytes()).unwrap();
+    if let Err(err) = block_on(run()) {
+        panic!("{}", err);
+    }
 }
