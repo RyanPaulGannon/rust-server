@@ -1,13 +1,17 @@
 use dotenv::dotenv;
 use futures::executor::block_on;
 use sea_orm::{Database, DbErr};
-use std::env;
 
-const DATABASE_NAME: &str = "ryans_test";
+#[macro_use]
+extern crate dotenv_codegen;
+
+const DATABASE_URL: &str = dotenv!("DATABASE_URL");
+const DATABASE_NAME: &str = dotenv!("DATABASE_NAME");
 
 async fn run() -> Result<(), DbErr> {
-    let database_url = env::var("DATABASE_URL").expect("Database url must be set");
-    let db = Database::connect(&database_url).await?;
+    let db = Database::connect(DATABASE_URL).await?;
+
+    println!("Connected to, {:?}", db);
 
     Ok(())
 }
